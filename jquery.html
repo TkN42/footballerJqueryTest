@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Futbol Sahası</title>
+<style>
+
+  #field {
+    width: 400px;
+    height: 200px;
+    border: 2px solid green;
+    position: relative;
+  }
+  
+  .player {
+    width: 30px;
+    height: 30px;
+    background-color: blue;
+    position: absolute;
+    cursor: pointer;
+  }
+  
+  .yellow-card {
+    width: 20px;
+    height: 20px;
+    background-color: yellow;
+    border-radius: 50%; 
+    position: absolute;
+    top: -15px; 
+    left: 10px;
+    display: none; 
+  }
+  
+  .red-card {
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 50%; 
+    position: absolute;
+    top: -15px;
+    left: 30px; 
+    display: none; 
+  }
+
+  </style>
+</head>
+<body>
+
+<div id="field">
+  <div class="player" id="player1"></div>
+  <div class="player" id="player2"></div>
+  <div class="player" id="player3"></div>
+  <div class="player" id="player4"></div>
+  <div class="player" id="player5"></div>
+  <div class="player" id="player6"></div>
+  <div class="player" id="player7"></div>
+  <div class="player" id="player8"></div>
+  <div class="player" id="player9"></div>
+  <div class="player" id="player10"></div>
+  <div class="player" id="player11"></div>
+</div>
+
+<button id="changeFormation">Dizilişi Değiştir</button>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+$(document).ready(function() {
+    var initialFormation = [
+      { id: "player1", top: 85, left: 10 },
+      { id: "player2", top: 10, left: 100 },
+      { id: "player3", top: 60, left: 100 },
+      { id: "player4", top: 110, left: 100 },
+      { id: "player5", top: 160, left: 100 },
+      { id: "player6", top: 10, left: 200 },
+      { id: "player7", top: 60, left: 200 },
+      { id: "player8", top: 110, left: 200 },
+      { id: "player9", top: 160, left: 200 },
+      { id: "player10", top: 60, left: 300 },
+      { id: "player11", top: 110, left: 300 },
+    ];
+  
+    applyFormation(initialFormation);
+  
+    $(".player").click(function() {
+        var playerId = $(this).attr("id");
+        var yellowCard = $("#" + playerId + "-yellow-card");
+        var redCard = $("#" + playerId + "-red-card");
+        if (yellowCard.css("display") == "none") {
+            yellowCard.show();
+            $("#" + playerId).css("background-color", "yellow");
+        } else if (redCard.css("display") == "none") {
+            redCard.show();
+            $("#" + playerId).css("background-color", "red");
+        } else {
+            alert("Oyuncu " + playerId.substring(6) + " oyundan atıldı!");
+            $("#" + playerId).hide();
+            yellowCard.hide();
+            redCard.hide();
+        }
+    });
+  
+    $("#changeFormation").click(function() {
+      var randomFormation = shuffleFormation(initialFormation);
+      applyFormation(randomFormation);
+    });
+  
+    function applyFormation(formation) {
+      formation.forEach(function(player) {
+        $("#" + player.id).css({ top: player.top, left: player.left });
+        $("#" + player.id).after('<div class="yellow-card" id="' + player.id + '-yellow-card"></div>');
+        $("#" + player.id).after('<div class="red-card" id="' + player.id + '-red-card"></div>');
+      });
+    }
+  
+    function shuffleFormation(formation) {
+      var shuffledFormation = formation.slice(); 
+      for (var i = shuffledFormation.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = shuffledFormation[i];
+        shuffledFormation[i] = shuffledFormation[j];
+        shuffledFormation[j] = temp;
+      }
+      return shuffledFormation;
+    }
+
+    function changePosition() {
+      var newFormation = initialFormation.map(function(player) {
+        return {
+          id: player.id,
+          top: Math.floor(Math.random() * 150), 
+          left: Math.floor(Math.random() * 350) 
+        };
+      });
+      applyFormation(newFormation);
+    }
+
+    $("#changeFormation").click(function() {
+      changePosition();
+    });
+});
+
+
+</script>
+</body>
+</html>
